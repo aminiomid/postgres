@@ -1,0 +1,20 @@
+[Unit]
+Description=Patroni PostgreSQL HA
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+
+User=postgres
+Group=postgres
+
+ExecStart={{ patroni_venv }}/bin/patroni {{ patroni_config_file }}
+
+Restart=on-failure
+RestartSec=5
+
+TimeoutStartSec=0
+
+[Install]
+WantedBy=multi-user.target

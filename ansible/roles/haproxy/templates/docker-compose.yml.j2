@@ -1,0 +1,12 @@
+services:
+  haproxy:
+    image: haproxy:3.3.14-alpine3.24
+    container_name: postgres-haproxy
+    restart: unless-stopped
+
+    ports:
+      - "15432:5432"
+      - "8404:8404"
+
+    volumes:
+      - ./haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro

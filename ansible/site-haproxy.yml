@@ -1,0 +1,7 @@
+---
+- name: Deploy HAProxy
+  hosts: haproxy
+  connection: local
+  gather_facts: false
+  roles:
+    - haproxy

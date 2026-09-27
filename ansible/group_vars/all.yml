@@ -1,0 +1,21 @@
+---
+ansible_user: root
+ansible_python_interpreter: /usr/bin/python3
+
+timezone: UTC
+
+
+etcd_client_port: 2379
+etcd_peer_port: 2380
+
+postgresql_version: "16"
+postgresql_port: 5432
+postgresql_data_dir: "/var/lib/postgresql/16/main"
+
+patroni_scope: "postgres-ha"
+patroni_namespace: "/service/"
+patroni_version: "3.2.2"
+patroni_port: 8008
+patroni_config_dir: "/etc/patroni"
+patroni_config_file: "/etc/patroni/config.yml"
+patroni_venv: "/opt/patroni/venv"

@@ -1,0 +1,28 @@
+---
+- name: Prepare PostgreSQL HA nodes
+  hosts: all
+  become: true
+
+  roles:
+    - common
+
+- name: Configure etcd cluster
+  hosts: etcd
+  become: true
+
+  roles:
+    - etcd
+
+- name: Install PostgreSQL
+  hosts: postgres
+  become: true
+  # serial: 1 
+  roles:
+    - postgresql
+
+
+- name: Configure Patroni
+  hosts: patroni
+  become: true
+  roles:
+    - patroni

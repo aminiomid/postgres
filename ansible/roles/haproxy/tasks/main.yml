@@ -1,0 +1,27 @@
+---
+- name: Create HAProxy directory
+  ansible.builtin.file:
+    path: "{{ playbook_dir }}/haproxy"
+    state: directory
+    mode: "0755"
+
+- name: Deploy HAProxy configuration
+  ansible.builtin.template:
+    src: haproxy.cfg.j2
+    dest: "{{ playbook_dir }}/haproxy/haproxy.cfg"
+    mode: "0644"
+  register: haproxy_config
+
+- name: Deploy Docker Compose file
+  ansible.builtin.template:
+    src: docker-compose.yml.j2
+    dest: "{{ playbook_dir }}/haproxy/docker-compose.yml"
+    mode: "0644"
+  register: haproxy_compose
+
+- name: Start HAProxy with Docker Compose
+  ansible.builtin.command:
+    cmd: docker compose up -d
+    chdir: "{{ playbook_dir }}/haproxy"
+  register: haproxy_compose_up
+  changed_when: "'Started' in haproxy_compose_up.stdout or 'Recreated' in haproxy_compose_up.stdout"

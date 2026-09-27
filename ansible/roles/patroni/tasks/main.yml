@@ -1,0 +1,62 @@
+---
+- name: Install Patroni dependencies
+  ansible.builtin.apt:
+    name:
+      - python3-venv
+      - python3-pip
+      - python3-dev
+      - libpq-dev
+      - gcc
+    state: present
+    update_cache: true
+
+- name: Create Patroni directories
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    owner: postgres
+    group: postgres
+    mode: "0755"
+  loop:
+    - "{{ patroni_config_dir }}"
+    - /opt/patroni
+
+- name: Create Patroni virtual environment
+  ansible.builtin.command:
+    cmd: "python3 -m venv {{ patroni_venv }}"
+    creates: "{{ patroni_venv }}/bin/python"
+
+- name: Install Patroni
+  ansible.builtin.pip:
+    name:
+      - "patroni[etcd3]=={{ patroni_version }}"
+      - "psycopg[binary]"
+      - "ydiff<1.3"
+    virtualenv: "{{ patroni_venv }}"
+    virtualenv_command: python3 -m venv
+
+
+
+- name: Deploy Patroni configuration
+  ansible.builtin.template:
+    src: patroni.yml.j2
+    dest: "{{ patroni_config_file }}"
+    owner: postgres
+    group: postgres
+    mode: "0600"
+
+
+- name: Deploy Patroni systemd service
+  ansible.builtin.template:
+    src: patroni.service.j2
+    dest: /etc/systemd/system/patroni.service
+    owner: root
+    group: root
+    mode: "0644"
+  notify: Restart Patroni
+
+- name: Enable Patroni service
+  ansible.builtin.systemd:
+    name: patroni
+    enabled: true
+    daemon_reload: true

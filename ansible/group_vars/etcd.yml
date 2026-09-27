@@ -1,0 +1,16 @@
+---
+etcd_version: "3.5.16"
+
+etcd_cluster_name: "postgres-ha-etcd"
+
+etcd_data_dir: "/var/lib/etcd"
+
+etcd_cluster_token: "postgres-ha-etcd-cluster"
+
+etcd_cluster:
+  etcd-1:
+    ip: "{{ hostvars['etcd-1']['ansible_host'] }}"
+  etcd-2:
+    ip: "{{ hostvars['etcd-2']['ansible_host'] }}"
+  etcd-3:
+    ip: "{{ hostvars['etcd-3']['ansible_host'] }}"
